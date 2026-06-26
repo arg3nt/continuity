@@ -12,4 +12,4 @@ ENV PORT=3099
 EXPOSE 3099
 
 USER bun
-CMD ["bun", "run", "server.js"]
+CMD ["bun", "server.js"]

@@ -67,3 +67,14 @@ const server = Bun.serve({
 });
 
 console.log(`Continuity server listening on http://localhost:${server.port}`);
+
+// Graceful shutdown: stop accepting connections and exit cleanly when the
+// container runtime (e.g. Kubernetes) sends SIGTERM, or on Ctrl-C (SIGINT).
+function shutdown(signal) {
+  console.log(`[shutdown] received ${signal}, stopping server`);
+  server.stop();
+  process.exit(0);
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
