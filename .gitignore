@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build / packaging output
+*.tgz
+
+# Editor / IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Logs
+*.log

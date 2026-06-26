@@ -1,0 +1,9 @@
+.git
+.gitignore
+.idea
+.vscode
+.claude
+helm
+Containerfile
+.containerignore
+*.md

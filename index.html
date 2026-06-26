@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Continuity Monitor</title>
+  <meta name="description" content="WebSocket continuity and throughput test suite" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="faceplate">
+    <!-- Header -->
+    <div class="header">
+      <h1>Continuity Monitor</h1>
+      <div class="sub">WebSocket Ping &amp; Throughput Test</div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <div id="status-led" class="led led-disconnected"></div>
+      <span id="status-text">CONNECTING…</span>
+    </div>
+
+    <!-- VU meter -->
+    <div class="vu-meter">
+      <div class="vu-label">Latency</div>
+      <div class="vu-track">
+        <div id="vu-fill" class="vu-fill vu-good"></div>
+        <div id="vu-peak" class="vu-peak" style="left:0%"></div>
+      </div>
+      <div class="vu-ticks">
+        <span>0.1ms</span><span>1ms</span><span>10ms</span><span>100ms</span><span>1s</span>
+      </div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-latency"></canvas>
+        <div class="stat-label">Latency</div>
+        <div class="stat-value" id="stat-latency">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-avg-latency"></canvas>
+        <div class="stat-label">Avg Latency</div>
+        <div class="stat-value" id="stat-avg-latency">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-min-latency"></canvas>
+        <div class="stat-label">Min</div>
+        <div class="stat-value" id="stat-min-latency">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-max-latency"></canvas>
+        <div class="stat-label">Max</div>
+        <div class="stat-value" id="stat-max-latency">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-jitter"></canvas>
+        <div class="stat-label">Jitter</div>
+        <div class="stat-value" id="stat-jitter">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-rps"></canvas>
+        <div class="stat-label">Round Trips/s</div>
+        <div class="stat-value" id="stat-rps">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-throughput"></canvas>
+        <div class="stat-label">Throughput</div>
+        <div class="stat-value" id="stat-throughput">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-loss"></canvas>
+        <div class="stat-label">Pkt Loss</div>
+        <div class="stat-value" id="stat-loss">—</div>
+      </div>
+      <div class="stat-cell">
+        <canvas class="sparkline" id="spark-downtime"></canvas>
+        <div class="stat-label">Last Downtime</div>
+        <div class="stat-value" id="stat-downtime">—</div>
+      </div>
+    </div>
+
+    <!-- Latency histogram -->
+    <div class="histogram-section">
+      <div class="histogram-label">Latency Distribution</div>
+      <div class="histogram" id="histogram">
+        <div class="histo-bar-group" data-bucket="0">
+          <div class="histo-bar-wrap"><div class="histo-bar" id="hbar-0"></div></div>
+          <div class="histo-count" id="hcount-0">0</div>
+          <div class="histo-bucket-label">&lt;0.1ms</div>
+        </div>
+        <div class="histo-bar-group" data-bucket="1">
+          <div class="histo-bar-wrap"><div class="histo-bar" id="hbar-1"></div></div>
+          <div class="histo-count" id="hcount-1">0</div>
+          <div class="histo-bucket-label">0.1–1ms</div>
+        </div>
+        <div class="histo-bar-group" data-bucket="2">
+          <div class="histo-bar-wrap"><div class="histo-bar" id="hbar-2"></div></div>
+          <div class="histo-count" id="hcount-2">0</div>
+          <div class="histo-bucket-label">1–10ms</div>
+        </div>
+        <div class="histo-bar-group" data-bucket="3">
+          <div class="histo-bar-wrap"><div class="histo-bar" id="hbar-3"></div></div>
+          <div class="histo-count" id="hcount-3">0</div>
+          <div class="histo-bucket-label">10–100ms</div>
+        </div>
+        <div class="histo-bar-group" data-bucket="4">
+          <div class="histo-bar-wrap"><div class="histo-bar" id="hbar-4"></div></div>
+          <div class="histo-count" id="hcount-4">0</div>
+          <div class="histo-bucket-label">0.1–1s</div>
+        </div>
+        <div class="histo-bar-group" data-bucket="5">
+          <div class="histo-bar-wrap"><div class="histo-bar" id="hbar-5"></div></div>
+          <div class="histo-count" id="hcount-5">0</div>
+          <div class="histo-bucket-label">&gt;1s</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payload slider -->
+    <div class="slider-section">
+      <div class="slider-header">
+        <span class="slider-label">Payload Size</span>
+        <span id="payload-size">1 B</span>
+      </div>
+      <input type="range" id="payload-slider" min="0" max="1000" value="0" />
+    </div>
+
+    <!-- Event log -->
+    <div class="log-section">
+      <div class="log-label">Event Log</div>
+      <div class="event-log" id="event-log"></div>
+    </div>
+  </div>
+
+  <script src="client.js"></script>
+</body>
+</html>
