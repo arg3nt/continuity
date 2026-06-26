@@ -4,27 +4,27 @@ import { join } from "path";
 const PORT = parseInt(process.env.PORT || "3099", 10);
 const DIR = import.meta.dir;
 
-const MIME = {
-  html: "text/html; charset=utf-8",
-  css: "text/css; charset=utf-8",
-  js: "text/javascript; charset=utf-8",
+// Explicit allowlist of servable files. The request path is only ever used as
+// a key into this map, never as a filesystem path, so there is no traversal
+// surface: anything not listed here is a 404.
+const ROUTES = {
+  "/": { file: "index.html", mime: "text/html; charset=utf-8" },
+  "/index.html": { file: "index.html", mime: "text/html; charset=utf-8" },
+  "/style.css": { file: "style.css", mime: "text/css; charset=utf-8" },
+  "/client.js": { file: "client.js", mime: "text/javascript; charset=utf-8" },
 };
 
 /**
- * Serve a static file from the continuity directory.
- * Returns null if not found.
+ * Serve one of the known static files. Returns null if the path is not in the
+ * allowlist or the file can't be read.
  */
 function serveStatic(pathname) {
-  // Map / to /index.html
-  if (pathname === "/") pathname = "/index.html";
-
-  const ext = pathname.split(".").pop();
-  const mime = MIME[ext];
-  if (!mime) return null;
+  const route = ROUTES[pathname];
+  if (!route) return null;
 
   try {
-    const body = readFileSync(join(DIR, pathname));
-    return new Response(body, { headers: { "Content-Type": mime } });
+    const body = readFileSync(join(DIR, route.file));
+    return new Response(body, { headers: { "Content-Type": route.mime } });
   } catch {
     return null;
   }
