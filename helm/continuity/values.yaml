@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: continuity
-  tag: ""          # defaults to .Chart.AppVersion when empty
+  repository: ghcr.io/arg3nt/continuity
+  tag: v1.0.0          # defaults to .Chart.AppVersion when empty
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
